@@ -171,6 +171,7 @@ class Posts extends React.Component {
               <th>间隔</th>
               <th>公众号</th>
               <th>详情</th>
+              <th>下载PDF</th>
             </tr>
           </thead>
           <tbody>
@@ -188,6 +189,7 @@ class Posts extends React.Component {
                     <td>{i.updateInterval}</td>
                     <td>{i.showProfile}</td>
                     <td><Link to={`/posts/${i.id}`}>详情</Link></td>
+                    <td><a href={`/api/pdf?url=${i.showTitle}`}>下载</a></td>
                   </tr>
                 );
               })
