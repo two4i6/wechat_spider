@@ -130,6 +130,7 @@ class Posts extends React.Component {
     // show
     const showData = data.map(i => {
       i.title = i.title || '';
+      let link = i.link;
       let showTitle = i.title.substr(0, 25) || '暂无';
       if (i.link) {
         showTitle = <a title={i.title} href={i.link} rel="noopener noreferrer" target="_blank">{showTitle}</a>;
@@ -189,7 +190,7 @@ class Posts extends React.Component {
                     <td>{i.updateInterval}</td>
                     <td>{i.showProfile}</td>
                     <td><Link to={`/posts/${i.id}`}>详情</Link></td>
-                    <td><a href={`/api/pdf?url=${i.showTitle}`}>下载</a></td>
+                    <td><a href={`/api/pdf?url=${i.link}`}>下载</a></td>
                   </tr>
                 );
               })
