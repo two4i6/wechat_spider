@@ -130,7 +130,6 @@ class Posts extends React.Component {
     // show
     const showData = data.map(i => {
       i.title = i.title || '';
-      let link = i.link;
       let showTitle = i.title.substr(0, 25) || '暂无';
       if (i.link) {
         showTitle = <a title={i.title} href={i.link} rel="noopener noreferrer" target="_blank">{showTitle}</a>;
@@ -139,6 +138,9 @@ class Posts extends React.Component {
       }
       return {
         id: i.id,
+        author: i.profile.title,
+        title: i.title,
+        link: i.link,
         publishAt: i.publishAt ? moment(i.publishAt).format('YY-MM-DD HH:mm') : '暂无',
         showTitle,
         msgIdx: i.msgIdx || '0',
@@ -162,12 +164,9 @@ class Posts extends React.Component {
         <table className="table table-striped">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>发布时间 {this.sortByTime('publishAt')}</th>
               <th>文章标题</th>
+              <th>发布时间 {this.sortByTime('publishAt')}</th>
               <th>位置</th>
-              <th>阅读数</th>
-              <th>点赞数</th>
               <th>更新时间 {this.sortByTime('updateNumAt')}</th>
               <th>间隔</th>
               <th>公众号</th>
@@ -179,18 +178,15 @@ class Posts extends React.Component {
             {
               showData.map(i => {
                 return (
-                  <tr key={i.id}>
-                    <td>{i.id}</td>
-                    <td>{i.publishAt}</td>
+                  <tr key={i.id}> 
                     <td>{i.showTitle}</td>
+                    <td>{i.publishAt}</td>
                     <td>{i.msgIdx}</td>
-                    <td>{i.readNum}</td>
-                    <td>{i.likeNum}</td>
                     <td>{i.updateNumAt}</td>
                     <td>{i.updateInterval}</td>
                     <td>{i.showProfile}</td>
                     <td><Link to={`/posts/${i.id}`}>详情</Link></td>
-                    <td><a href={`/api/pdf?url=${i.link}`}>下载</a></td>
+                    <td><a href={`/api/pdf?url=${encodeURIComponent(i.link)}&filename=${i.author} ${(i.publishAt).substring(0,8)} ${i.title}`} target="_blank">下载</a></td>
                   </tr>
                 );
               })

@@ -9,6 +9,7 @@ const models = require('../../models');
 const utils = require('../../utils');
 const wrap = require('../wrap');
 const conf = require('./conf');
+const { urlencoded } = require('express');
 
 api.use('/conf', conf);
 
@@ -199,8 +200,14 @@ api.put('/profiles/:id', wrap(async(req, res) => {
 
 // webpage to pdf api
 api.get('/pdf', async(req, res) => {
-    const url = req.query.url || 'https://www.google.com';
-    const filename = req.query.filename || `${Date.now()}.pdf`;
+    let url = req.query.url || 'https://www.baidu.com';
+    try {
+        url = new URL(url);
+    } catch (e) {
+        return res.json({ state: 0, message: 'url格式不正确' });
+    }
+    const filename = encodeURI(req.query.filename, 'utf-8') || `${Date.now()}.pdf`;
+    console.log(filename);
     const result = await (async() => {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
@@ -210,7 +217,7 @@ api.get('/pdf', async(req, res) => {
         return pdf;
     })();
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-disposition', `attachment; filename=${filename}`);
+    res.setHeader('Content-disposition', `attachment; filename*=utf-8''${filename}`);
     res.setHeader('Content-Length', result.length);
     res.send(result);
 });

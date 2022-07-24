@@ -2,7 +2,7 @@ version: '3'
 services:
   app:
     build: ./
-    image: wechat-spider:latest
+    image: wtc133/wechat-spider:latest
     restart: always
     environment:
       - NODE_ENV=production
