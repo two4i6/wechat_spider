@@ -198,6 +198,24 @@ api.put('/profiles/:id', wrap(async(req, res) => {
     res.json({ state: 1, message: '更新公众号成功' });
 }));
 
+async function autoScroll(page) {
+    await page.evaluate(async() => {
+        await new Promise((resolve, reject) => {
+            var totalHeight = 0;
+            var distance = 100;
+            var timer = setInterval(() => {
+                var scrollHeight = document.body.scrollHeight;
+                window.scrollBy(0, distance);
+                totalHeight += distance;
+
+                if (totalHeight >= scrollHeight - window.innerHeight) {
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, 100);
+        });
+    });
+}
 // webpage to pdf api
 api.get('/pdf', async(req, res) => {
     let url = req.query.url || 'https://www.baidu.com';
@@ -207,11 +225,12 @@ api.get('/pdf', async(req, res) => {
         return res.json({ state: 0, message: 'url格式不正确' });
     }
     const filename = encodeURI(req.query.filename, 'utf-8') || `${Date.now()}.pdf`;
-    console.log(filename);
     const result = await (async() => {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
-        await page.goto(url);
+        await page.goto(url, { waitUntil: 'load' });
+        await autoScroll(page);
+
         const pdf = await page.pdf({ format: 'a4' });
         await browser.close();
         return pdf;
@@ -221,5 +240,7 @@ api.get('/pdf', async(req, res) => {
     res.setHeader('Content-Length', result.length);
     res.send(result);
 });
+
+
 
 module.exports = api;

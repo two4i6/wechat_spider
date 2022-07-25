@@ -186,7 +186,7 @@ class Posts extends React.Component {
                     <td>{i.updateInterval}</td>
                     <td>{i.showProfile}</td>
                     <td><Link to={`/posts/${i.id}`}>详情</Link></td>
-                    <td><a href={`/api/pdf?url=${encodeURIComponent(i.link)}&filename=${i.author} ${(i.publishAt).substring(0,8)} ${i.title}`} target="_blank">下载</a></td>
+                    <td><a href={`/api/pdf?url=${encodeURIComponent(i.link)}&filename=${i.author} 20${(i.publishAt).substring(0,8)} ${i.title}`} target="_blank">下载</a></td>
                   </tr>
                 );
               })
